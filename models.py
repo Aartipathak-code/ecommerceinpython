@@ -1,7 +1,7 @@
 """
 Database models for the e-commerce application.
 """
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import enum
@@ -43,7 +43,7 @@ class Product(Base):
     description = Column(String)
     price = Column(Float, nullable=False)
     stock = Column(Integer, default=0)
-    image_url = Column(String)
+    image_url = Column(Text)  # Changed to Text to support Base64 encoded images
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationships

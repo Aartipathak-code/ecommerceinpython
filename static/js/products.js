@@ -134,11 +134,80 @@ function displaySellerProducts(products) {
     `).join('');
 }
 
+// Helper function to convert file to Base64
+function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+// Helper function to show image preview
+function showImagePreview(imageData) {
+    const preview = document.getElementById('image-preview');
+    if (imageData) {
+        preview.innerHTML = `
+            <div style="text-align: center;">
+                <img src="${imageData}" 
+                     alt="Preview" 
+                     style="max-width: 100%; max-height: 200px; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">Image preview</p>
+            </div>
+        `;
+    } else {
+        preview.innerHTML = '';
+    }
+}
+
+// Handle file upload
+document.getElementById('product-image-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        // Validate file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification('Image too large. Please use an image under 2MB', 'error');
+            e.target.value = ''; // Clear the file input
+            return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showNotification('Please select an image file', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        try {
+            const base64 = await convertToBase64(file);
+            document.getElementById('product-image-url').value = base64;
+            showImagePreview(base64);
+            showNotification('Image loaded successfully', 'success');
+        } catch (error) {
+            showNotification('Failed to load image', 'error');
+            console.error('Image conversion error:', error);
+        }
+    }
+});
+
+// Handle URL input - show preview when URL is entered
+document.getElementById('product-image-url').addEventListener('input', (e) => {
+    const url = e.target.value;
+    if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:'))) {
+        showImagePreview(url);
+    } else if (!url) {
+        showImagePreview(null);
+    }
+});
+
 // Add Product Button
 document.getElementById('add-product-btn').addEventListener('click', () => {
     state.editingProduct = null;
     document.getElementById('product-modal-title').textContent = 'Add Product';
     document.getElementById('product-form').reset();
+    document.getElementById('product-image-file').value = ''; // Clear file input
+    showImagePreview(null); // Clear preview
     openModal('product-modal');
 });
 
@@ -182,7 +251,15 @@ async function editProduct(productId) {
         document.getElementById('product-description').value = product.description || '';
         document.getElementById('product-price').value = product.price;
         document.getElementById('product-stock').value = product.stock;
-        document.getElementById('product-image').value = product.image_url || '';
+        document.getElementById('product-image-url').value = product.image_url || '';
+        document.getElementById('product-image-file').value = ''; // Clear file input
+
+        // Show preview if image exists
+        if (product.image_url) {
+            showImagePreview(product.image_url);
+        } else {
+            showImagePreview(null);
+        }
 
         openModal('product-modal');
     } catch (error) {
