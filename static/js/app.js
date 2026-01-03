@@ -186,10 +186,10 @@ document.getElementById('nav-seller').addEventListener('click', () => {
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const tab = e.target.dataset.tab;
-        
+
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
-        
+
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
         });
@@ -219,6 +219,9 @@ async function initApp() {
             state.token = null;
         }
     }
+
+    // Load saved cart from localStorage
+    loadCart();
 
     // Load initial products
     loadProducts();
