@@ -36,6 +36,13 @@ def startup_event():
     """Initialize database on startup."""
     init_db()
     print("Database initialized successfully!")
+    
+    # Seed database with initial data
+    try:
+        from seed_data import seed_database
+        seed_database()
+    except Exception as e:
+        print(f"Note: Database seeding skipped or failed: {e}")
 
 if __name__ == "__main__":
     import uvicorn
