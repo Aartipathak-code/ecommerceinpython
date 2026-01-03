@@ -165,9 +165,9 @@ function showImagePreview(imageData) {
 document.getElementById('product-image-file').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (file) {
-        // Validate file size (max 2MB)
-        if (file.size > 2 * 1024 * 1024) {
-            showNotification('Image too large. Please use an image under 2MB', 'error');
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showNotification('Image too large. Please use an image under 5MB', 'error');
             e.target.value = ''; // Clear the file input
             return;
         }
