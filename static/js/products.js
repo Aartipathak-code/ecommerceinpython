@@ -220,7 +220,7 @@ document.getElementById('product-form').addEventListener('submit', async (e) => 
         description: document.getElementById('product-description').value,
         price: parseFloat(document.getElementById('product-price').value),
         stock: parseInt(document.getElementById('product-stock').value),
-        image_url: document.getElementById('product-image').value || null
+        image_url: document.getElementById('product-image-url').value || null
     };
 
     try {
