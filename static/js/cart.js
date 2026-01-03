@@ -12,9 +12,33 @@ cartBtn.addEventListener('click', () => {
     cartSidebar.classList.add('open');
 });
 
+// Close cart sidebar
 closeCartBtn.addEventListener('click', () => {
     cartSidebar.classList.remove('open');
 });
+
+// Save cart to localStorage
+function saveCart() {
+    try {
+        localStorage.setItem('cart', JSON.stringify(state.cart));
+    } catch (error) {
+        console.error('Failed to save cart:', error);
+    }
+}
+
+// Load cart from localStorage
+function loadCart() {
+    try {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            state.cart = JSON.parse(savedCart);
+            updateCartUI();
+        }
+    } catch (error) {
+        console.error('Failed to load cart:', error);
+        state.cart = [];
+    }
+}
 
 // Update cart UI
 function updateCartUI() {
@@ -58,6 +82,9 @@ function updateCartUI() {
             </div>
         </div>
     `).join('');
+
+    // Save cart to localStorage whenever UI updates
+    saveCart();
 }
 
 // Update cart item quantity
